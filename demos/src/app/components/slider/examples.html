@@ -1,4 +1,12 @@
 <div class="demo-content">
+  <mdc-slider #ranged discrete min="500" max="1000"></mdc-slider>
+  <p>Min: {{ ranged.min }}</p>
+  <p>Max: {{ ranged.max }}</p>
+  <p>Value: {{ ranged.value }}</p>
+  <!-- <example-viewer [example]="exampleSimple"></example-viewer> -->
+</div>
+
+<div class="demo-content">
   <mdc-slider #simple discrete [min]="min" [max]="max" [value]="value"></mdc-slider>
   <p>Min: {{ simple.min }}</p>
   <p>Max: {{ simple.max }}</p>

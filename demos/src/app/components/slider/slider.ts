@@ -5,7 +5,7 @@ import {ComponentViewer} from '../../shared/component-viewer';
 import {MdcSliderChange} from '@angular-mdc/web';
 
 @Component({template: '<component-viewer></component-viewer>'})
-export class SliderDemo implements OnInit {
+export class Slider implements OnInit {
   @ViewChild(ComponentViewer, {static: true}) _componentViewer: ComponentViewer;
 
   ngOnInit(): void {

@@ -144,22 +144,10 @@ describe('MdcSlider', () => {
       expect(sliderInstance.min).toBe(10);
     });
 
-    it('#should NOT set min to 101', () => {
-      sliderInstance.min = 101;
-      fixture.detectChanges();
-      expect(sliderInstance.min).toBeLessThanOrEqual(100);
-    });
-
     it('#should set max to 150', () => {
       sliderInstance.max = 150;
       fixture.detectChanges();
       expect(sliderInstance.max).toBe(150);
-    });
-
-    it('#should NOT set max to -1', () => {
-      sliderInstance.max = -1;
-      fixture.detectChanges();
-      expect(sliderInstance.max).toBeGreaterThan(0);
     });
 
     it('#should set disabled to true', () => {
