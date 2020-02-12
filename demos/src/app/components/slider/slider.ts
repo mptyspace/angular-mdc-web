@@ -38,6 +38,8 @@ export class Examples {
   min: number = 10;
   value: number = 25;
 
+  discreteValue = 50;
+
   sliderModel: number = 10;
 
   continuousInputEventValue: number;

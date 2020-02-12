@@ -86,7 +86,7 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
       this._foundation?.setupTrackMarker();
     }
   }
-  private _discrete: boolean = false;
+  private _discrete = false;
 
   @Input()
   get markers(): boolean {
@@ -98,7 +98,7 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
       this._foundation?.setupTrackMarker();
     }
   }
-  private _markers: boolean = false;
+  private _markers = false;
 
   @Input()
   get min(): number {
@@ -147,17 +147,14 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
       this._changeDetectorRef.markForCheck();
     }
   }
-  private _step: number = 1;
+  private _step: number = 0;
 
   @Input()
   get value(): number | undefined {
     return this._value;
   }
   set value(newValue: number | undefined) {
-    const value = coerceNumberProperty(newValue);
-    if (value !== this._value) {
-      this.setValue(newValue, true);
-    }
+    this.setValue(newValue, true);
   }
   private _value?: number;
 
@@ -168,7 +165,7 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
   set disabled(value: boolean) {
     this.setDisabledState(value);
   }
-  private _disabled: boolean = false;
+  private _disabled = false;
 
   @Output() readonly change: EventEmitter<MdcSliderChange> = new EventEmitter<MdcSliderChange>();
   @Output() readonly input: EventEmitter<MdcSliderChange> = new EventEmitter<MdcSliderChange>();
@@ -179,11 +176,11 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
   @ViewChild('pin', {static: false}) pinValueMarker?: ElementRef;
   @ViewChild('markercontainer', {static: false}) trackMarkerContainer?: ElementRef<HTMLElement>;
 
-  /** View to model callback called when value changes */
-  _onChanged: (value: any) => void = () => {};
+  /** Function when touched */
+  _onTouched = () => {};
 
-  /** onTouch function registered via registerOnTouch (ControlValueAccessor). */
-  _onTouched: () => any = () => {};
+  /** Function when changed */
+  _onChanged: (value: any) => void = () => {};
 
   getDefaultFoundation() {
     const adapter: MDCSliderAdapter = {
@@ -277,11 +274,11 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
     this.setValue(value);
   }
 
-  registerOnChange(fn: (value: any) => any): void {
+  registerOnChange(fn: (value: any) => void): void {
     this._onChanged = fn;
   }
 
-  registerOnTouched(fn: any) {
+  registerOnTouched(fn: () => void): void {
     this._onTouched = fn;
   }
 
@@ -290,11 +287,17 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
       return;
     }
 
-    this._value = coerceNumberProperty(value, this._min);
-
-    if (this._initialized) {
-      this._foundation?.setValue(this._value!);
+    const newValue = coerceNumberProperty(value, this._min);
+    if (newValue === this._value) {
+      return;
     }
+    this._value = Math.round(newValue);
+
+    if (!this._initialized) {
+      return;
+    }
+
+    this._foundation?.setValue(this._value);
 
     if (isUserInput) {
       this._onChanged(this._value);
@@ -304,7 +307,7 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
 
   setDisabledState(disabled: boolean): void {
     this._disabled = coerceBooleanProperty(disabled);
-    this._foundation?.setDisabled(this._disabled);
+    this._foundation?.setDisabled(disabled);
     this._changeDetectorRef.markForCheck();
   }
 
@@ -313,10 +316,12 @@ export class MdcSlider extends MDCComponent<MDCSliderFoundation>
   }
 
   private _onInput(): void {
+    this.setValue(this._foundation.getValue(), true);
     this.input.emit(new MdcSliderChange(this, this._value));
   }
 
   private _onChange(): void {
+    this.setValue(this._foundation.getValue(), true);
     this.change.emit(new MdcSliderChange(this, this._value));
   }
 
